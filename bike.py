@@ -7,6 +7,9 @@ class Wheel(object):
         self.rim = rim
         self.tyre = tyre
 
+    def diameter(self):
+        return self.rim + (self.tyre * 2)
+
 
 def wheelify(data):
     return [Wheel(cell[0], cell[1]) for cell in data]
@@ -17,17 +20,13 @@ class Gear(object):
     def __init__(self, chainring, cog, rim, tyre):
         self.chainring = chainring
         self.cog = cog
-        self.rim = rim
-        self.tyre = tyre
+        self.wheel = Wheel(rim, tyre)
 
     def ratio(self):
         return self.chainring / (self.cog * 1.0)
 
     def gear_inches(self):
-        return self.ratio() * self.diameter()
-
-    def diameter(self):
-        return self.rim + (self.tyre * 2)
+        return self.ratio() * self.wheel.diameter()
 
 
 class RevealingReferences(object):
