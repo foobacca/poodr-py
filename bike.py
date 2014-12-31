@@ -33,7 +33,10 @@ class RevealingReferences(object):
         self.wheels = wheelify(data)
 
     def diameters(self):
-        return [wheel.rim + (wheel.tyre * 2) for wheel in self.wheels]
+        return [self.diameter(wheel) for wheel in self.wheels]
+
+    def diameter(self, wheel):
+        return wheel.rim + (wheel.tyre * 2)
 
 
 print Gear(52, 11, 26, 1.5).gear_inches()
