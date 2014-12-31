@@ -4,7 +4,7 @@ import math
 
 class Wheel(object):
 
-    def __init__(self, rim, tyre):
+    def __init__(self, rim=26, tyre=1.5):
         self.rim = rim
         self.tyre = tyre
 
@@ -16,12 +16,12 @@ class Wheel(object):
 
 
 def wheelify(data):
-    return [Wheel(cell[0], cell[1]) for cell in data]
+    return [Wheel(rim=cell[0], tyre=cell[1]) for cell in data]
 
 
 class Gear(object):
 
-    def __init__(self, chainring, cog, wheel=None):
+    def __init__(self, chainring=40, cog=18, wheel=None):
         self.chainring = chainring
         self.cog = cog
         self.wheel = wheel
@@ -42,14 +42,20 @@ class RevealingReferences(object):
         return [wheel.diameter() for wheel in self.wheels]
 
 
-print Gear(52, 11, Wheel(26, 1.5)).gear_inches()
-print Gear(52, 11, Wheel(24, 1.25)).gear_inches()
+print Gear(
+    chainring=52,
+    cog=11,
+    wheel=Wheel(rim=26, tyre=1.5)).gear_inches()
+print Gear(
+    chainring=52,
+    cog=11,
+    wheel=Wheel(rim=24, tyre=1.25)).gear_inches()
 
 data = [[622, 20], [622, 23], [559, 30], [559, 40]]
 print RevealingReferences(data).diameters()
 
-wheel = Wheel(26, 1.5)
+wheel = Wheel(rim=26, tyre=1.5)
 print wheel.circumference()
 
-print Gear(52, 11, wheel).gear_inches()
-print Gear(52, 11).ratio()
+print Gear(chainring=52, cog=11, wheel=wheel).gear_inches()
+print Gear(chainring=52, cog=11).ratio()
