@@ -23,7 +23,7 @@ class Gear(object):
         self.wheel = Wheel(rim, tyre)
 
     def ratio(self):
-        return self.chainring / (self.cog * 1.0)
+        return self.chainring / float(self.cog)
 
     def gear_inches(self):
         return self.ratio() * self.wheel.diameter()
