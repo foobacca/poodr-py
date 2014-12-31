@@ -24,7 +24,10 @@ class Gear(object):
         return self.chainring / (self.cog * 1.0)
 
     def gear_inches(self):
-        return self.ratio() * (self.rim + (self.tyre * 2))
+        return self.ratio() * self.diameter()
+
+    def diameter(self):
+        return self.rim + (self.tyre * 2)
 
 
 class RevealingReferences(object):
