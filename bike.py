@@ -43,6 +43,10 @@ class RevealingReferences(object):
 
 
 class Bicycle(object):
+    pass
+
+
+class RoadBike(Bicycle):
 
     def __init__(self, size=None, tape_colour=None):
         self.size = size
@@ -89,7 +93,7 @@ if __name__ == '__main__':
     print Gear(chainring=52, cog=11, wheel=wheel).gear_inches()
     print Gear(chainring=52, cog=11).ratio()
 
-    bike = Bicycle(size='M', tape_colour='red')
+    bike = RoadBike(size='M', tape_colour='red')
     print bike.spares()
 
     mountain_bike = MountainBike(
