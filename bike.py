@@ -44,8 +44,10 @@ class RevealingReferences(object):
 
 class Bicycle(object):
 
-    def __init__(self, size=None):
+    def __init__(self, size=None, chain=None, tyre_size=None):
         self.size = size
+        self.chain = chain
+        self.tyre_size = tyre_size
 
 
 class RoadBike(Bicycle):
