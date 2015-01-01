@@ -46,8 +46,11 @@ class Bicycle(object):
 
     def __init__(self, size=None, chain=None, tyre_size=None):
         self.size = size
-        self.chain = chain
-        self.tyre_size = tyre_size
+        self.chain = chain or self.default_chain()
+        self.tyre_size = tyre_size or self.default_tyre_size()
+
+    def default_chain(self):
+        return "10-speed"
 
 
 class RoadBike(Bicycle):
@@ -55,6 +58,9 @@ class RoadBike(Bicycle):
     def __init__(self, tape_colour=None, **kwargs):
         self.tape_colour = tape_colour
         super(RoadBike, self).__init__(**kwargs)
+
+    def default_tyre_size(self):
+        return '23'
 
     def spares(self):
         return {
@@ -69,6 +75,9 @@ class MountainBike(Bicycle):
         self.front_shock = front_shock
         self.rear_shock = rear_shock
         super(MountainBike, self).__init__(**kwargs)
+
+    def default_tyre_size(self):
+        return '2.1'
 
     def spares(self):
         spares = super(MountainBike, self).spares()
