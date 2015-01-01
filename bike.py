@@ -52,6 +52,10 @@ class Bicycle(object):
     def default_chain(self):
         return "10-speed"
 
+    def default_tyre_size(self):
+        raise NotImplementedError(
+            'This %s cannot respond to: default_tyre_size' % self.__class__)
+
 
 class RoadBike(Bicycle):
 
