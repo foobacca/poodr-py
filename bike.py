@@ -87,6 +87,12 @@ class MountainBike(Bicycle):
         return spares
 
 
+class RecumbentBike(Bicycle):
+
+    def default_chain(self):
+        return '9-speed'
+
+
 if __name__ == '__main__':
     print Gear(
         chainring=52,
@@ -114,4 +120,6 @@ if __name__ == '__main__':
         front_shock='Manitou',
         rear_shock='fox')
     print mountain_bike.size
-    print mountain_bike.spares()
+    # print mountain_bike.spares()
+
+    bent = RecumbentBike()
