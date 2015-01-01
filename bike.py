@@ -98,9 +98,21 @@ class MountainBike(Bicycle):
 
 
 class RecumbentBike(Bicycle):
+    def __init__(self, flag=None):
+        self.flag = flag
 
     def default_chain(self):
         return '9-speed'
+
+    def default_tyre_size(self):
+        return '28'
+
+    def spares(self):
+        spares = super(RecumbentBike, self).spares()
+        spares.update({
+            'flag': self.flag
+        })
+        return spares
 
 
 if __name__ == '__main__':
@@ -132,4 +144,5 @@ if __name__ == '__main__':
     print mountain_bike.size
     print mountain_bike.spares()
 
-    bent = RecumbentBike()
+    bent = RecumbentBike(flag="tall and orange")
+    bent.spares()
