@@ -42,6 +42,20 @@ class RevealingReferences(object):
         return [wheel.diameter() for wheel in self.wheels]
 
 
+class Bicycle(object):
+
+    def __init__(self, size=None, tape_colour=None):
+        self.size = size
+        self.tape_colour = tape_colour
+
+    def spares(self):
+        return {
+            'chain': '10-speed',
+            'tyre_size': '23',
+            'tape_colour': self.tape_colour
+        }
+
+
 if __name__ == '__main__':
     print Gear(
         chainring=52,
@@ -60,3 +74,7 @@ if __name__ == '__main__':
 
     print Gear(chainring=52, cog=11, wheel=wheel).gear_inches()
     print Gear(chainring=52, cog=11).ratio()
+
+    bike = Bicycle(size='M', tape_colour='red')
+    print bike.size
+    print bike.spares()
