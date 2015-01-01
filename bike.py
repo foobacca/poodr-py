@@ -44,16 +44,27 @@ class RevealingReferences(object):
 
 class Bicycle(object):
 
-    def __init__(self, size=None, tape_colour=None):
+    def __init__(self, style='road', size=None, tape_colour=None,
+                 front_shock=None, rear_shock=None):
+        self.style = style
         self.size = size
         self.tape_colour = tape_colour
+        self.front_shock = front_shock
+        self.rear_shock = rear_shock
 
     def spares(self):
-        return {
-            'chain': '10-speed',
-            'tyre_size': '23',
-            'tape_colour': self.tape_colour
-        }
+        if self.style == 'road':
+            return {
+                'chain': '10-speed',
+                'tyre_size': '23',
+                'tape_colour': self.tape_colour
+            }
+        else:
+            return {
+                'chain': '10-speed',
+                'tyre_size': '2.1',
+                'rear_shock': self.rear_shock
+            }
 
 
 if __name__ == '__main__':
@@ -75,6 +86,9 @@ if __name__ == '__main__':
     print Gear(chainring=52, cog=11, wheel=wheel).gear_inches()
     print Gear(chainring=52, cog=11).ratio()
 
-    bike = Bicycle(size='M', tape_colour='red')
-    print bike.size
+    bike = Bicycle(
+        style='mountain',
+        size='S',
+        front_shock='Manitou',
+        rear_shock='Fox')
     print bike.spares()
