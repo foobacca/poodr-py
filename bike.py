@@ -43,14 +43,16 @@ class RevealingReferences(object):
 
 
 class Bicycle(object):
-    pass
+
+    def __init__(self, size=None):
+        self.size = size
 
 
 class RoadBike(Bicycle):
 
-    def __init__(self, size=None, tape_colour=None):
-        self.size = size
+    def __init__(self, tape_colour=None, **kwargs):
         self.tape_colour = tape_colour
+        super(RoadBike, self).__init__(**kwargs)
 
     def spares(self):
         return {
@@ -62,9 +64,9 @@ class RoadBike(Bicycle):
 
 class MountainBike(Bicycle):
     def __init__(self, front_shock=None, rear_shock=None, **kwargs):
-        super(MountainBike, self).__init__(**kwargs)
         self.front_shock = front_shock
         self.rear_shock = rear_shock
+        super(MountainBike, self).__init__(**kwargs)
 
     def spares(self):
         spares = super(MountainBike, self).spares()
@@ -100,4 +102,5 @@ if __name__ == '__main__':
         size='S',
         front_shock='Manitou',
         rear_shock='fox')
+    print mountain_bike.size
     print mountain_bike.spares()
