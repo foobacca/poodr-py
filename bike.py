@@ -61,10 +61,15 @@ class Bicycle(object):
             'This %s cannot respond to: default_tyre_size' % self.__class__)
 
     def spares(self):
-        return {
+        spares = {
             'chain': self.chain,
             'tyre_size': self.tyre_size,
         }
+        spares.update(self.local_spares())
+        return spares
+
+    def local_spares(self):
+        return {}
 
 
 class RoadBike(Bicycle):
@@ -75,12 +80,8 @@ class RoadBike(Bicycle):
     def default_tyre_size(self):
         return '23'
 
-    def spares(self):
-        spares = super(RoadBike, self).spares()
-        spares.update({
-            'tape_colour': self.tape_colour
-        })
-        return spares
+    def local_spares(self):
+        return {'tape_colour': self.tape_colour}
 
 
 class MountainBike(Bicycle):
@@ -91,12 +92,8 @@ class MountainBike(Bicycle):
     def default_tyre_size(self):
         return '2.1'
 
-    def spares(self):
-        spares = super(MountainBike, self).spares()
-        spares.update({
-            'rear_shock': self.rear_shock
-        })
-        return spares
+    def local_spares(self):
+        return {'rear_shock': self.rear_shock}
 
 
 class RecumbentBike(Bicycle):
@@ -109,12 +106,8 @@ class RecumbentBike(Bicycle):
     def default_tyre_size(self):
         return '28'
 
-    def spares(self):
-        spares = super(RecumbentBike, self).spares()
-        spares.update({
-            'flag': self.flag
-        })
-        return spares
+    def local_spares(self):
+        return {'flag': self.flag}
 
 
 if __name__ == '__main__':
