@@ -44,27 +44,30 @@ class RevealingReferences(object):
 
 class Bicycle(object):
 
-    def __init__(self, style='road', size=None, tape_colour=None,
-                 front_shock=None, rear_shock=None):
-        self.style = style
+    def __init__(self, size=None, tape_colour=None):
         self.size = size
         self.tape_colour = tape_colour
+
+    def spares(self):
+        return {
+            'chain': '10-speed',
+            'tyre_size': '23',
+            'tape_colour': self.tape_colour
+        }
+
+
+class MountainBike(Bicycle):
+    def __init__(self, front_shock=None, rear_shock=None, **kwargs):
+        super(MountainBike, self).__init__(**kwargs)
         self.front_shock = front_shock
         self.rear_shock = rear_shock
 
     def spares(self):
-        if self.style == 'road':
-            return {
-                'chain': '10-speed',
-                'tyre_size': '23',
-                'tape_colour': self.tape_colour
-            }
-        else:
-            return {
-                'chain': '10-speed',
-                'tyre_size': '2.1',
-                'rear_shock': self.rear_shock
-            }
+        spares = super(MountainBike, self).spares()
+        spares.update({
+            'rear_shock': self.rear_shock
+        })
+        return spares
 
 
 if __name__ == '__main__':
@@ -86,9 +89,11 @@ if __name__ == '__main__':
     print Gear(chainring=52, cog=11, wheel=wheel).gear_inches()
     print Gear(chainring=52, cog=11).ratio()
 
-    bike = Bicycle(
-        style='mountain',
+    bike = Bicycle(size='M', tape_colour='red')
+    print bike.spares()
+
+    mountain_bike = MountainBike(
         size='S',
         front_shock='Manitou',
-        rear_shock='Fox')
-    print bike.spares()
+        rear_shock='fox')
+    print mountain_bike.spares()
