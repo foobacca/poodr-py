@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from datetime import date, timedelta
 import math
 
 
@@ -42,9 +43,17 @@ class RevealingReferences(object):
         return [wheel.diameter() for wheel in self.wheels]
 
 
+class Schedule(object):
+
+    def is_scheduled(self, schedulable, start_date, end_date):
+        print "This %s is not scheduled\nbetween %s and %s" % \
+            (schedulable.__class__, start_date, end_date)
+
+
 class Bicycle(object):
 
     def __init__(self, size=None, chain=None, tyre_size=None, **kwargs):
+        self.schedule = Schedule()
         self.size = size
         self.chain = chain or self.default_chain()
         self.tyre_size = tyre_size or self.default_tyre_size()
@@ -70,6 +79,16 @@ class Bicycle(object):
 
     def local_spares(self):
         return {}
+
+    def is_schedulable(self, start_date, end_date):
+        return not self.is_scheduled(
+            start_date - timedelta(days=self.lead_days()), end_date)
+
+    def is_scheduled(self, start_date, end_date):
+        return self.schedule.is_scheduled(self, start_date, end_date)
+
+    def lead_days(self):
+        return 1
 
 
 class RoadBike(Bicycle):
@@ -141,3 +160,8 @@ if __name__ == '__main__':
 
     bent = RecumbentBike(flag="tall and orange")
     print bent.spares()
+
+    starting = date(2015, 9, 4)
+    ending = date(2015, 9, 10)
+    b = RoadBike()
+    b.is_schedulable(starting, ending)
