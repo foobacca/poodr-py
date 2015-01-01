@@ -42,20 +42,21 @@ class RevealingReferences(object):
         return [wheel.diameter() for wheel in self.wheels]
 
 
-print Gear(
-    chainring=52,
-    cog=11,
-    wheel=Wheel(rim=26, tyre=1.5)).gear_inches()
-print Gear(
-    chainring=52,
-    cog=11,
-    wheel=Wheel(rim=24, tyre=1.25)).gear_inches()
+if __name__ == '__main__':
+    print Gear(
+        chainring=52,
+        cog=11,
+        wheel=Wheel(rim=26, tyre=1.5)).gear_inches()
+    print Gear(
+        chainring=52,
+        cog=11,
+        wheel=Wheel(rim=24, tyre=1.25)).gear_inches()
 
-data = [[622, 20], [622, 23], [559, 30], [559, 40]]
-print RevealingReferences(data).diameters()
+    data = [[622, 20], [622, 23], [559, 30], [559, 40]]
+    print RevealingReferences(data).diameters()
 
-wheel = Wheel(rim=26, tyre=1.5)
-print wheel.circumference()
+    wheel = Wheel(rim=26, tyre=1.5)
+    print wheel.circumference()
 
-print Gear(chainring=52, cog=11, wheel=wheel).gear_inches()
-print Gear(chainring=52, cog=11).ratio()
+    print Gear(chainring=52, cog=11, wheel=wheel).gear_inches()
+    print Gear(chainring=52, cog=11).ratio()
