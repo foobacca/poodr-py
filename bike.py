@@ -44,10 +44,14 @@ class RevealingReferences(object):
 
 class Bicycle(object):
 
-    def __init__(self, size=None, chain=None, tyre_size=None):
+    def __init__(self, size=None, chain=None, tyre_size=None, **kwargs):
         self.size = size
         self.chain = chain or self.default_chain()
         self.tyre_size = tyre_size or self.default_tyre_size()
+        self.post_init(**kwargs)
+
+    def post_init(self, **kwargs):
+        pass
 
     def default_chain(self):
         return "10-speed"
@@ -65,9 +69,8 @@ class Bicycle(object):
 
 class RoadBike(Bicycle):
 
-    def __init__(self, tape_colour=None, **kwargs):
-        self.tape_colour = tape_colour
-        super(RoadBike, self).__init__(**kwargs)
+    def post_init(self, **kwargs):
+        self.tape_colour = kwargs.get('tape_colour')
 
     def default_tyre_size(self):
         return '23'
@@ -81,10 +84,9 @@ class RoadBike(Bicycle):
 
 
 class MountainBike(Bicycle):
-    def __init__(self, front_shock=None, rear_shock=None, **kwargs):
-        self.front_shock = front_shock
-        self.rear_shock = rear_shock
-        super(MountainBike, self).__init__(**kwargs)
+    def post_init(self, **kwargs):
+        self.front_shock = kwargs.get('front_shock')
+        self.rear_shock = kwargs.get('rear_shock')
 
     def default_tyre_size(self):
         return '2.1'
@@ -98,8 +100,8 @@ class MountainBike(Bicycle):
 
 
 class RecumbentBike(Bicycle):
-    def __init__(self, flag=None):
-        self.flag = flag
+    def post_init(self, **kwargs):
+        self.flag = kwargs.get('flag')
 
     def default_chain(self):
         return '9-speed'
@@ -145,4 +147,4 @@ if __name__ == '__main__':
     print mountain_bike.spares()
 
     bent = RecumbentBike(flag="tall and orange")
-    bent.spares()
+    print bent.spares()
