@@ -56,6 +56,12 @@ class Bicycle(object):
         raise NotImplementedError(
             'This %s cannot respond to: default_tyre_size' % self.__class__)
 
+    def spares(self):
+        return {
+            'chain': self.chain,
+            'tyre_size': self.tyre_size,
+        }
+
 
 class RoadBike(Bicycle):
 
@@ -67,11 +73,11 @@ class RoadBike(Bicycle):
         return '23'
 
     def spares(self):
-        return {
-            'chain': '10-speed',
-            'tyre_size': '23',
+        spares = super(RoadBike, self).spares()
+        spares.update({
             'tape_colour': self.tape_colour
-        }
+        })
+        return spares
 
 
 class MountainBike(Bicycle):
@@ -124,6 +130,6 @@ if __name__ == '__main__':
         front_shock='Manitou',
         rear_shock='fox')
     print mountain_bike.size
-    # print mountain_bike.spares()
+    print mountain_bike.spares()
 
     bent = RecumbentBike()
