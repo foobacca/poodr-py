@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+from datetime import date
+
+from bike import SchedulableMixin
 
 
 class Trip(object):
@@ -13,7 +16,12 @@ class Trip(object):
             preparer.prepare_trip(self)
 
 
-class Mechanic(object):
+class Vehicle(SchedulableMixin, object):
+    def lead_days(self):
+        return 3
+
+
+class Mechanic(SchedulableMixin, object):
 
     def prepare_trip(self, trip):
         for bicycle in trip.bicycles:
@@ -21,6 +29,9 @@ class Mechanic(object):
 
     def prepare_bicycle(self, bicycle):
         pass
+
+    def lead_days(self):
+        return 4
 
 
 class TripCoordinator(object):
@@ -43,3 +54,14 @@ class Driver(object):
 
     def fill_water_tank(self, vehicle):
         pass
+
+
+if __name__ == '__main__':
+    starting = date(2015, 9, 4)
+    ending = date(2015, 9, 10)
+
+    v = Vehicle()
+    v.is_schedulable(starting, ending)
+
+    m = Mechanic()
+    m.is_schedulable(starting, ending)
