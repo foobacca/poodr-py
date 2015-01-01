@@ -50,10 +50,27 @@ class Schedule(object):
             (schedulable.__class__, start_date, end_date)
 
 
-class Bicycle(object):
+class SchedulableMixin(object):
+    @property
+    def schedule(self):
+        if not hasattr(self, '_schedule'):
+            self._schedule = Schedule()
+        return self._schedule
+
+    def is_schedulable(self, start_date, end_date):
+        return not self.is_scheduled(
+            start_date - timedelta(days=self.lead_days()), end_date)
+
+    def is_scheduled(self, start_date, end_date):
+        return self.schedule.is_scheduled(self, start_date, end_date)
+
+    def lead_days(self):
+        return 0
+
+
+class Bicycle(SchedulableMixin, object):
 
     def __init__(self, size=None, chain=None, tyre_size=None, **kwargs):
-        self.schedule = Schedule()
         self.size = size
         self.chain = chain or self.default_chain()
         self.tyre_size = tyre_size or self.default_tyre_size()
@@ -79,13 +96,6 @@ class Bicycle(object):
 
     def local_spares(self):
         return {}
-
-    def is_schedulable(self, start_date, end_date):
-        return not self.is_scheduled(
-            start_date - timedelta(days=self.lead_days()), end_date)
-
-    def is_scheduled(self, start_date, end_date):
-        return self.schedule.is_scheduled(self, start_date, end_date)
 
     def lead_days(self):
         return 1
