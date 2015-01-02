@@ -68,13 +68,20 @@ class SchedulableMixin(object):
         return 0
 
 
-class Bicycle(SchedulableMixin, object):
+class Parts(object):
 
-    def __init__(self, size=None, chain=None, tyre_size=None, **kwargs):
-        self.size = size
+    def __init__(self, chain=None, tyre_size=None, **kwargs):
         self.chain = chain or self.default_chain()
         self.tyre_size = tyre_size or self.default_tyre_size()
         self.post_init(**kwargs)
+
+    def spares(self):
+        spares = {
+            'chain': self.chain,
+            'tyre_size': self.tyre_size,
+        }
+        spares.update(self.local_spares())
+        return spares
 
     def post_init(self, **kwargs):
         pass
@@ -86,22 +93,24 @@ class Bicycle(SchedulableMixin, object):
         raise NotImplementedError(
             'This %s cannot respond to: default_tyre_size' % self.__class__)
 
-    def spares(self):
-        spares = {
-            'chain': self.chain,
-            'tyre_size': self.tyre_size,
-        }
-        spares.update(self.local_spares())
-        return spares
-
     def local_spares(self):
         return {}
+
+
+class Bicycle(SchedulableMixin, object):
+
+    def __init__(self, size=None, parts=None):
+        self.size = size
+        self.parts = parts
+
+    def spares(self):
+        return self.parts.spares()
 
     def lead_days(self):
         return 1
 
 
-class RoadBike(Bicycle):
+class RoadBikeParts(Parts):
 
     def post_init(self, **kwargs):
         self.tape_colour = kwargs.get('tape_colour')
@@ -113,7 +122,7 @@ class RoadBike(Bicycle):
         return {'tape_colour': self.tape_colour}
 
 
-class MountainBike(Bicycle):
+class MountainBikeParts(Parts):
     def post_init(self, **kwargs):
         self.front_shock = kwargs.get('front_shock')
         self.rear_shock = kwargs.get('rear_shock')
@@ -125,7 +134,7 @@ class MountainBike(Bicycle):
         return {'rear_shock': self.rear_shock}
 
 
-class RecumbentBike(Bicycle):
+class RecumbentBikeParts(Parts):
     def post_init(self, **kwargs):
         self.flag = kwargs.get('flag')
 
@@ -158,20 +167,22 @@ if __name__ == '__main__':
     print Gear(chainring=52, cog=11, wheel=wheel).gear_inches()
     print Gear(chainring=52, cog=11).ratio()
 
-    bike = RoadBike(size='M', tape_colour='red')
-    print bike.spares()
+    road_bike = Bicycle(
+        size='M',
+        parts=RoadBikeParts(tape_colour='red'))
+    print road_bike.size
+    print road_bike.spares()
 
-    mountain_bike = MountainBike(
-        size='S',
-        front_shock='Manitou',
-        rear_shock='fox')
+    mountain_bike = Bicycle(
+        size='L',
+        parts=MountainBikeParts(rear_shock='Fox'))
     print mountain_bike.size
     print mountain_bike.spares()
 
-    bent = RecumbentBike(flag="tall and orange")
+    bent = Bicycle(parts=RecumbentBikeParts(flag="tall and orange"))
     print bent.spares()
 
     starting = date(2015, 9, 4)
     ending = date(2015, 9, 10)
-    b = RoadBike()
+    b = Bicycle()
     b.is_schedulable(starting, ending)
