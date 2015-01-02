@@ -91,19 +91,14 @@ class Part(object):
         return uni
 
 
-chain = Part(name='chain', description='10-speed')
-
-road_tyre = Part(name='tyre_size', description='23')
-mountain_tyre = Part(name='tyre_size', description='2.1')
-
-tape = Part(name='tape_colour', description='red')
-
-rear_shock = Part(name='rear_shock', description='Fox')
-
-front_shock = Part(
-    name='front_shock',
-    description='10-speed',
-    needs_spare=False)
+def parts_factory(config, part_class=Part, parts_class=Parts):
+    return parts_class([
+        part_class(
+            name=part_config[0],
+            description=part_config[1],
+            needs_spare=part_config[2] if len(part_config) > 2 else True
+        ) for part_config in config
+    ])
 
 
 class Bicycle(SchedulableMixin, object):
@@ -125,6 +120,19 @@ def spares_to_string(spares):
         ']'
 
 
+road_config = [
+    ['chain', '10-speed'],
+    ['tyre_size', '23'],
+    ['tape_colour', 'red'],
+]
+mountain_config = [
+    ['chain', '10-speed'],
+    ['tyre_size', '2.1'],
+    ['front_shock', 'Manitou', False],
+    ['rear_shock', 'Fox'],
+]
+
+
 if __name__ == '__main__':
     print Gear(
         chainring=52,
@@ -144,15 +152,17 @@ if __name__ == '__main__':
     print Gear(chainring=52, cog=11, wheel=wheel).gear_inches()
     print Gear(chainring=52, cog=11).ratio()
 
+    road_parts = parts_factory(road_config)
     road_bike = Bicycle(
         size='M',
-        parts=Parts([chain, road_tyre, tape]))
+        parts=road_parts)
     print road_bike.size
     print spares_to_string(road_bike.spares())
 
+    mountain_parts = parts_factory(mountain_config)
     mountain_bike = Bicycle(
         size='L',
-        parts=Parts([chain, mountain_tyre, front_shock, rear_shock]))
+        parts=mountain_parts)
     print mountain_bike.size
     print spares_to_string(mountain_bike.spares())
 
