@@ -70,31 +70,40 @@ class SchedulableMixin(object):
 
 class Parts(object):
 
-    def __init__(self, chain=None, tyre_size=None, **kwargs):
-        self.chain = chain or self.default_chain()
-        self.tyre_size = tyre_size or self.default_tyre_size()
-        self.post_init(**kwargs)
+    def __init__(self, parts=None):
+        self.parts = parts
 
     def spares(self):
-        spares = {
-            'chain': self.chain,
-            'tyre_size': self.tyre_size,
-        }
-        spares.update(self.local_spares())
-        return spares
+        return [part for part in self.parts if part.needs_spare]
 
-    def post_init(self, **kwargs):
-        pass
 
-    def default_chain(self):
-        return "10-speed"
+class Part(object):
 
-    def default_tyre_size(self):
-        raise NotImplementedError(
-            'This %s cannot respond to: default_tyre_size' % self.__class__)
+    def __init__(self, **kwargs):
+        self.name = kwargs['name']
+        self.description = kwargs['description']
+        self.needs_spare = kwargs.get('needs_spare', True)
 
-    def local_spares(self):
-        return {}
+    def __unicode__(self):
+        uni = "%s: %s" % (self.name, self.description)
+        if self.needs_spare:
+            uni += " (needs spare)"
+        return uni
+
+
+chain = Part(name='chain', description='10-speed')
+
+road_tyre = Part(name='tyre_size', description='23')
+mountain_tyre = Part(name='tyre_size', description='2.1')
+
+tape = Part(name='tape_colour', description='red')
+
+rear_shock = Part(name='rear_shock', description='Fox')
+
+front_shock = Part(
+    name='front_shock',
+    description='10-speed',
+    needs_spare=False)
 
 
 class Bicycle(SchedulableMixin, object):
@@ -110,42 +119,10 @@ class Bicycle(SchedulableMixin, object):
         return 1
 
 
-class RoadBikeParts(Parts):
-
-    def post_init(self, **kwargs):
-        self.tape_colour = kwargs.get('tape_colour')
-
-    def default_tyre_size(self):
-        return '23'
-
-    def local_spares(self):
-        return {'tape_colour': self.tape_colour}
-
-
-class MountainBikeParts(Parts):
-    def post_init(self, **kwargs):
-        self.front_shock = kwargs.get('front_shock')
-        self.rear_shock = kwargs.get('rear_shock')
-
-    def default_tyre_size(self):
-        return '2.1'
-
-    def local_spares(self):
-        return {'rear_shock': self.rear_shock}
-
-
-class RecumbentBikeParts(Parts):
-    def post_init(self, **kwargs):
-        self.flag = kwargs.get('flag')
-
-    def default_chain(self):
-        return '9-speed'
-
-    def default_tyre_size(self):
-        return '28'
-
-    def local_spares(self):
-        return {'flag': self.flag}
+def spares_to_string(spares):
+    return '[' + \
+        ', '.join([unicode(s) for s in spares]) + \
+        ']'
 
 
 if __name__ == '__main__':
@@ -169,18 +146,15 @@ if __name__ == '__main__':
 
     road_bike = Bicycle(
         size='M',
-        parts=RoadBikeParts(tape_colour='red'))
+        parts=Parts([chain, road_tyre, tape]))
     print road_bike.size
-    print road_bike.spares()
+    print spares_to_string(road_bike.spares())
 
     mountain_bike = Bicycle(
         size='L',
-        parts=MountainBikeParts(rear_shock='Fox'))
+        parts=Parts([chain, mountain_tyre, front_shock, rear_shock]))
     print mountain_bike.size
-    print mountain_bike.spares()
-
-    bent = Bicycle(parts=RecumbentBikeParts(flag="tall and orange"))
-    print bent.spares()
+    print spares_to_string(mountain_bike.spares())
 
     starting = date(2015, 9, 4)
     ending = date(2015, 9, 10)
