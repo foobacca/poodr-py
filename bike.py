@@ -135,6 +135,11 @@ mountain_config = [
     ['front_shock', 'Manitou', False],
     ['rear_shock', 'Fox'],
 ]
+recumbent_config = [
+    ['chain', '9-speed'],
+    ['tyre_size', '28'],
+    ['flag', 'tall and orange'],
+]
 
 
 if __name__ == '__main__':
@@ -156,19 +161,23 @@ if __name__ == '__main__':
     print Gear(chainring=52, cog=11, wheel=wheel).gear_inches()
     print Gear(chainring=52, cog=11).ratio()
 
-    road_parts = PartsFactory.build(road_config)
     road_bike = Bicycle(
         size='M',
-        parts=road_parts)
+        parts=PartsFactory.build(road_config))
     print road_bike.size
     print spares_to_string(road_bike.spares())
 
-    mountain_parts = PartsFactory.build(mountain_config)
     mountain_bike = Bicycle(
         size='L',
-        parts=mountain_parts)
+        parts=PartsFactory.build(mountain_config))
     print mountain_bike.size
     print spares_to_string(mountain_bike.spares())
+
+    recumbent_bike = Bicycle(
+        size='L',
+        parts=PartsFactory.build(recumbent_config))
+    print recumbent_bike.size
+    print spares_to_string(recumbent_bike.spares())
 
     starting = date(2015, 9, 4)
     ending = date(2015, 9, 10)
