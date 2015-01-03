@@ -77,28 +77,32 @@ class Parts(object):
         return [part for part in self.parts if part.needs_spare]
 
 
-class Part(object):
+class PartsFactory(object):
+    class Part(object):
+        def __init__(self, **kwargs):
+            self.name = kwargs['name']
+            self.description = kwargs['description']
+            self.needs_spare = kwargs['needs_spare']
 
-    def __init__(self, **kwargs):
-        self.name = kwargs['name']
-        self.description = kwargs['description']
-        self.needs_spare = kwargs.get('needs_spare', True)
+        def __unicode__(self):
+            uni = "%s: %s" % (self.name, self.description)
+            if self.needs_spare:
+                uni += " (needs spare)"
+            return uni
 
-    def __unicode__(self):
-        uni = "%s: %s" % (self.name, self.description)
-        if self.needs_spare:
-            uni += " (needs spare)"
-        return uni
+    @staticmethod
+    def build(config, parts_class=Parts):
+        return parts_class([
+            PartsFactory._create_part(part_config) for part_config in config
+        ])
 
-
-def parts_factory(config, part_class=Part, parts_class=Parts):
-    return parts_class([
-        part_class(
+    @staticmethod
+    def _create_part(part_config):
+        return PartsFactory.Part(
             name=part_config[0],
             description=part_config[1],
             needs_spare=part_config[2] if len(part_config) > 2 else True
-        ) for part_config in config
-    ])
+        )
 
 
 class Bicycle(SchedulableMixin, object):
@@ -152,14 +156,14 @@ if __name__ == '__main__':
     print Gear(chainring=52, cog=11, wheel=wheel).gear_inches()
     print Gear(chainring=52, cog=11).ratio()
 
-    road_parts = parts_factory(road_config)
+    road_parts = PartsFactory.build(road_config)
     road_bike = Bicycle(
         size='M',
         parts=road_parts)
     print road_bike.size
     print spares_to_string(road_bike.spares())
 
-    mountain_parts = parts_factory(mountain_config)
+    mountain_parts = PartsFactory.build(mountain_config)
     mountain_bike = Bicycle(
         size='L',
         parts=mountain_parts)
